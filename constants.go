@@ -84,6 +84,7 @@ const (
 	ANSI_FORM_FEED        = 0x0C
 	ANSI_CARRIAGE_RETURN  = 0x0D
 	ANSI_ESCAPE_PRIMARY   = 0x1B
+	ANSI_Cancel           = 0x18
 	ANSI_ESCAPE_SECONDARY = 0x5B
 	ANSI_OSC_STRING_ENTRY = 0x5D
 	ANSI_COMMAND_FIRST    = 0x40
@@ -118,7 +119,7 @@ const (
 func getByteRange(start byte, end byte) []byte {
 	bytes := make([]byte, 0, 32)
 	for i := start; i <= end; i++ {
-		bytes = append(bytes, byte(i))
+		bytes = append(bytes, i)
 	}
 
 	return bytes
@@ -146,7 +147,7 @@ var lowerCase = getByteRange(0x60, 0x7E)
 // Alphabetics	  40-7E hex  (all of upper and lower case)
 var alphabetics = append(upperCase, lowerCase...)
 
-var printables = getByteRange(0x20, 0x7F)
+var printables = getByteRange(0x20, 0x7E)
 
 var escapeIntermediateToGroundBytes = getByteRange(0x30, 0x7E)
 var escapeToGroundBytes = getEscapeToGroundBytes()
@@ -165,14 +166,15 @@ func getEscapeToGroundBytes() []byte {
 }
 
 func getExecuteBytes() []byte {
-	executeBytes := getByteRange(0x00, 0x17)
-	executeBytes = append(executeBytes, 0x19)
+	executeBytes := getByteRange(0x00, 0x11)
+	executeBytes = append(executeBytes, getByteRange(0x14, 0x17)...)
+	executeBytes = append(executeBytes, 0x19,0x7f)
 	executeBytes = append(executeBytes, getByteRange(0x1C, 0x1F)...)
 	return executeBytes
 }
 
 func getToGroundBytes() []byte {
-	groundBytes := []byte{0x18}
+	var groundBytes []byte
 	groundBytes = append(groundBytes, 0x1A)
 	groundBytes = append(groundBytes, getByteRange(0x80, 0x8F)...)
 	groundBytes = append(groundBytes, getByteRange(0x91, 0x97)...)

@@ -47,7 +47,7 @@ func (base baseState) Name() string {
 
 func (base baseState) Transition(s state) error {
 	if s == base.parser.ground {
-		execBytes := []byte{0x18}
+		var execBytes []byte
 		execBytes = append(execBytes, 0x1A)
 		execBytes = append(execBytes, getByteRange(0x80, 0x8F)...)
 		execBytes = append(execBytes, getByteRange(0x91, 0x97)...)

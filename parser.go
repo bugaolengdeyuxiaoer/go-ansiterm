@@ -9,6 +9,8 @@ import (
 type AnsiParser struct {
 	currState          state
 	eventHandler       AnsiEventHandler
+	csiXHandler        CsiXHandler
+	csiSearchHandler   CsiSearchHandler
 	context            *ansiContext
 	csiEntry           state
 	csiParam           state
@@ -18,6 +20,10 @@ type AnsiParser struct {
 	error              state
 	ground             state
 	oscString          state
+	csiX               state
+	csiX2              state
+	csiSearch          state
+	csiRSearch         state
 	stateMap           []state
 
 	logf func(string, ...interface{})
@@ -33,8 +39,10 @@ func WithLogf(f func(string, ...interface{})) Option {
 
 func CreateParser(initialState string, evtHandler AnsiEventHandler, opts ...Option) *AnsiParser {
 	ap := &AnsiParser{
-		eventHandler: evtHandler,
-		context:      &ansiContext{},
+		eventHandler:     evtHandler,
+		csiXHandler:      evtHandler,
+		csiSearchHandler: evtHandler,
+		context:          &ansiContext{},
 	}
 	for _, o := range opts {
 		o(ap)
@@ -66,6 +74,10 @@ func CreateParser(initialState string, evtHandler AnsiEventHandler, opts ...Opti
 	ap.error = errorState{baseState{name: "Error", parser: ap}}
 	ap.ground = groundState{baseState{name: "Ground", parser: ap}}
 	ap.oscString = oscStringState{baseState{name: "OscString", parser: ap}}
+	ap.csiX = csiX{baseState{name: "CsiXHandler", parser: ap}}
+	ap.csiX2 = &csiDoubleX{baseState: baseState{name: "CsiDoubleX", parser: ap}}
+	ap.csiSearch = csiSearch{baseState{name: "CsiSearch", parser: ap}}
+	ap.csiRSearch = csiRSearch{baseState{name: "CsiRSearch", parser: ap}}
 
 	ap.stateMap = []state{
 		ap.csiEntry,
