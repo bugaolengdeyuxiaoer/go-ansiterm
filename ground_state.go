@@ -19,14 +19,12 @@ func (gs groundState) Handle(b byte) (s state, e error) {
 		return gs, gs.parser.CsiXDispatcher()
 	case isSearchMode(b) :
 		// first search clean buffer
-		gs.parser.csiXHandler.Clean()
-		return gs.parser.csiSearch, gs.parser.CsiSearch()
+		return gs.parser.csiSearch, gs.parser.csiXHandler.Clean()
 	case isDoubleMode(b) :
 		// first search clean buffer
 		return gs.parser.csiX2,nil
 	case isRSearchMode(b) :
-		gs.parser.csiXHandler.Clean()
-		return gs.parser.csiRSearch, gs.parser.CsiRSearch()
+		return gs.parser.csiRSearch, gs.parser.csiXHandler.Clean()
 	}
 
 	return gs, nil

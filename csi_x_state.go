@@ -47,11 +47,7 @@ func (csiState csiX) Handle(b byte) (s state, e error) {
 func (csiState csiDoubleX) Handle(b byte) (s state, e error) {
 	csiState.parser.logf("CsiX2Handler::Handle %#x", b)
 	switch {
-	case isDoubleX(b):
-		return *csiState.fromState, csiState.parser.CsiXDispatcher()
-	case isExecute(b):
-		return *csiState.fromState, csiState.parser.CsiXDispatcher()
-	case isClean(b):
+	case sliceContains(executors, b):
 		return *csiState.fromState, csiState.parser.CsiXDispatcher()
 	}
 	return *csiState.fromState, nil
@@ -67,7 +63,7 @@ func (csiState csiSearch) Handle(b byte) (s state, e error) {
 	switch {
 	case isDoubleX(b):
 		return csiState.parser.csiX2, nil
-	case isExecute(b):
+	case sliceContains(executors, b):
 		return csiState.parser.ground, csiState.parser.enter()
 	default:
 		return csiState.parser.csiSearch, csiState.parser.CsiSearch()
@@ -79,8 +75,8 @@ func (csiState csiRSearch) Handle(b byte) (s state, e error) {
 	switch {
 	case isDoubleX(b):
 		return csiState.parser.csiX2, nil
-	case isExecute(b):
-		return csiState.parser.ground, csiState.parser.enter()
+	case sliceContains(executors, b):
+		return csiState.parser.ground, csiState.parser.CsiXDispatcher()
 	default:
 		return csiState.parser.csiSearch, csiState.parser.CsiRSearch()
 	}
@@ -88,13 +84,6 @@ func (csiState csiRSearch) Handle(b byte) (s state, e error) {
 
 func isDoubleX(b byte) bool {
 	if b == 0x18 {
-		return true
-	}
-	return false
-}
-
-func isExecute(b byte) bool {
-	if b == 0x0d || b == 0x0a {
 		return true
 	}
 	return false

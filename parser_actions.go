@@ -120,7 +120,7 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl c
 	case 0x03:
 		return ap.csiXHandler.Clean()
-	// ctrl d ,if cmd line is not empty, delete one character forward. else terminate this session
+	// ctrl d, if cmd line is not empty, delete one character forward. else terminate this session
 	case 0x04:
 		return ap.csiXHandler.RemoveForwardCharacterOrClose()
 	// ctrl e, cursor move line end
@@ -135,7 +135,7 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl h, delete character ,same as backspace
 	case 0x08, 0x7f:
 		return ap.csiXHandler.RemoveBackwardCharacter()
-	// ctrl i,horizon table
+	// ctrl i, horizon table
 	case 0x09:
 		break
 	// ctrl j, new line, same as enter
@@ -144,7 +144,7 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl k, cut the part of the selected line after the cursor and copy it to the clipboard.
 	case 0x0b:
 		return ap.csiXHandler.RemoveForwardAll()
-	// 	Form Feed, equal "clear" command
+	// ctrl l, form feed, equal "clear" command
 	case 0x0c:
 		return ap.csiXHandler.Clean()
 	// ctrl m, carriage return
@@ -153,16 +153,16 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl n, next command in history
 	case 0x0e:
 		return ap.csiXHandler.NextCommand()
-	// ctrl o ,enter with command display
+	// ctrl o, enter with command display
 	case 0x0f:
 		return ap.csiXHandler.EnterWithRedisplay()
-	// ctrl p , previous command in history
+	// ctrl p, previous command in history
 	case 0x10:
 		return ap.csiXHandler.PreviousCommand()
 	// ctrl q,
 	case 0x11:
 		break
-	// ctrl r,reverse search history
+	// ctrl r, reverse search history
 	case 0x12:
 		break
 	// ctrl s, search history
@@ -171,7 +171,7 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl t, swap the last two characters.
 	case 0x14:
 		return ap.csiXHandler.SwapLastTwoCharacter()
-		// ctrl u,delete all characters from cursor to beginning
+	// ctrl u,delete all characters from cursor to beginning
 	case 0x15:
 		return ap.csiXHandler.RemoveBackwardAll()
 	// ctrl v
@@ -180,10 +180,10 @@ func (ap *AnsiParser) CsiXDispatcher() error {
 	// ctrl w, delete one word before cursor
 	case 0x17:
 		return ap.csiXHandler.RemoveBackwardWord()
-		// ctrl x,double x move cursor from current to ahead of command line.
+	// ctrl x, double x move cursor from current to ahead of command line.
 	case 0x18:
 		return ap.csiXHandler.DoubleX()
-		// ctrl y,retrieves last item that you deleted or cut
+	// ctrl y, retrieves last item that you deleted or cut
 	case 0x19:
 		return ap.csiXHandler.ShowBuffer()
 	}
