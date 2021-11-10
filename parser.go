@@ -22,7 +22,6 @@ type AnsiParser struct {
 	oscString          state
 	csiX               state
 	csiX2              state
-	csiSearch          state
 	csiRSearch         state
 	stateMap           []state
 
@@ -76,7 +75,6 @@ func CreateParser(initialState string, evtHandler AnsiEventHandler, opts ...Opti
 	ap.oscString = oscStringState{baseState{name: "OscString", parser: ap}}
 	ap.csiX = csiX{baseState{name: "CsiXHandler", parser: ap}}
 	ap.csiX2 = &csiDoubleX{baseState: baseState{name: "CsiDoubleX", parser: ap}}
-	ap.csiSearch = csiSearch{baseState{name: "CsiSearch", parser: ap}}
 	ap.csiRSearch = csiRSearch{baseState{name: "CsiRSearch", parser: ap}}
 
 	ap.stateMap = []state{

@@ -16,10 +16,6 @@ func (escState escapeState) Handle(b byte) (s state, e error) {
 		return escState.parser.csiEntry, nil
 	case b == ANSI_OSC_STRING_ENTRY:
 		return escState.parser.oscString, nil
-	// intercept case of executors
-	// 0x7f remove one word backward
-	case b == 0x7f:
-		return escState.parser.ground,escState.parser.CsiXDispatcher()
 	case sliceContains(executors, b):
 		return escState, escState.parser.execute()
 	case sliceContains(escapeToGroundBytes, b):

@@ -24,11 +24,6 @@ type csiDoubleX struct {
 	fromState *state
 }
 
-// csiSearch when command line in search mode
-type csiSearch struct {
-	baseState
-}
-
 // csiSearch when command line in reverseSearch mode
 type csiRSearch struct {
 	baseState
@@ -58,27 +53,20 @@ func (csiState *csiDoubleX) Enter() error {
 	return nil
 }
 
-func (csiState csiSearch) Handle(b byte) (s state, e error) {
-	csiState.parser.logf("CsiSearch::Handle %#x", b)
-	switch {
-	case isDoubleX(b):
-		return csiState.parser.csiX2, nil
-	case sliceContains(executors, b):
-		return csiState.parser.ground, csiState.parser.enter()
-	default:
-		return csiState.parser.csiSearch, csiState.parser.CsiSearch()
-	}
-}
 
 func (csiState csiRSearch) Handle(b byte) (s state, e error) {
 	csiState.parser.logf("CsiSearch::Handle %#x", b)
+	nextState ,err := csiState.baseState.Handle(b)
+	if nextState != nil || err != nil {
+		return nextState, err
+	}
 	switch {
 	case isDoubleX(b):
 		return csiState.parser.csiX2, nil
 	case sliceContains(executors, b):
 		return csiState.parser.ground, csiState.parser.CsiXDispatcher()
 	default:
-		return csiState.parser.csiSearch, csiState.parser.CsiRSearch()
+		return csiState.parser.csiRSearch, csiState.parser.CsiRSearch()
 	}
 }
 

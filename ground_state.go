@@ -17,9 +17,6 @@ func (gs groundState) Handle(b byte) (s state, e error) {
 		return gs, gs.parser.print()
 	case sliceContains(executors, b):
 		return gs, gs.parser.CsiXDispatcher()
-	case isSearchMode(b) :
-		// first search clean buffer
-		return gs.parser.csiSearch, gs.parser.csiXHandler.Clean()
 	case isDoubleMode(b) :
 		// first search clean buffer
 		return gs.parser.csiX2,nil
@@ -32,13 +29,6 @@ func (gs groundState) Handle(b byte) (s state, e error) {
 
 func isRSearchMode(b byte) bool {
 	if b == 0x12 {
-		return true
-	}
-	return false
-}
-
-func isSearchMode(b byte) bool {
-	if b == 0x13 {
 		return true
 	}
 	return false
